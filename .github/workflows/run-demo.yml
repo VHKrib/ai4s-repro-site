@@ -57,6 +57,18 @@ jobs:
           python pkg/scripts/run_pipeline.py --mode case --case "pkg/cases/${{ github.event.inputs.case_id }}" --out $out --science-python $py --stage3-python $py
           Get-ChildItem -Recurse $out | Select-Object FullName, Length
 
+      - name: Show pipeline logs on failure
+        if: failure()
+        shell: pwsh
+        run: |
+          if (Test-Path runs/latest/logs) {
+            Get-ChildItem -Recurse runs/latest/logs -Filter *.log | ForEach-Object {
+              "`n=== $($_.Name) ==="
+              Get-Content $_.FullName -Tail 40
+            }
+          }
+          if (Test-Path runs/latest/result.json) { Get-Content runs/latest/result.json -Raw }
+
       - name: Collect results
         shell: pwsh
         run: |
