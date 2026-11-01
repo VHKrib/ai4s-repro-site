@@ -21,6 +21,10 @@ jobs:
     runs-on: windows-latest
     timeout-minutes: 30
     steps:
+      - name: Disable CRLF conversion
+        shell: pwsh
+        run: git config --global core.autocrlf false
+
       - name: Checkout site
         uses: actions/checkout@v4
 
