@@ -20,6 +20,9 @@ jobs:
   run:
     runs-on: windows-latest
     timeout-minutes: 30
+    env:
+      PYTHONUTF8: "1"
+      PYTHONIOENCODING: "utf-8"
     steps:
       - name: Disable CRLF conversion
         shell: pwsh
