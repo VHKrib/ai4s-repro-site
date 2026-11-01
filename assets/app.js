@@ -19,16 +19,16 @@
   var DEFAULT_CASE = "hiv1_1t3r_darunavir";
   var VIEWS = ["home", "hiv1", "jak2", "egfr", "target", "method", "results", "evidence", "progress", "limits"];
   var TITLES = {
-    home: "A4S 科研工作台 · 蛋白抑制剂设计案例",
+    home: "AI4S 科研工作台 · 蛋白抑制剂设计案例",
     hiv1: "HIV-1 蛋白酶 × 达芦那韦 · 六章",
     jak2: "JAK2 × RXT · 六章",
     egfr: "EGFR · 六章（未执行）",
-    target: "靶点与分子 · A4S 科研工作台",
-    method: "方法 · A4S 科研工作台",
-    results: "结果 · A4S 科研工作台",
-    evidence: "证据与可复现 · A4S 科研工作台",
-    progress: "实时进度 · A4S 科研工作台",
-    limits: "边界与下一步 · A4S 科研工作台"
+    target: "靶点与分子 · AI4S 科研工作台",
+    method: "方法 · AI4S 科研工作台",
+    results: "结果 · AI4S 科研工作台",
+    evidence: "证据与可复现 · AI4S 科研工作台",
+    progress: "实时进度 · AI4S 科研工作台",
+    limits: "边界与下一步 · AI4S 科研工作台"
   };
 
   var $ = function (sel, root) { return (root || document).querySelector(sel); };
