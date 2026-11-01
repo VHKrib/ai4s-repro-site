@@ -872,6 +872,15 @@ envs\py3119-stage3\Scripts\python.exe stage3.py run --config stage3_case\stage3_
         <p class="page-lede" id="progress-desc">
           下面每个数字都由本地服务从磁盘上的状态文件读出，页面不存第二份。每 1.2 秒读一次，切到任意一次历史运行都能回放。
         </p>
+
+        <div class="run-live" id="run-live" hidden>
+          <div class="run-live-top">
+            <strong>最近一次在 GitHub 上跑</strong>
+            <span id="run-live-meta" class="run-live-meta"></span>
+          </div>
+          <p id="run-live-body" class="run-live-body"></p>
+          <a class="run-live-btn" href="https://github.com/VHKrib/ai4s-repro-site/actions/workflows/run-demo.yml" target="_blank" rel="noopener">在 GitHub 上再跑一次 →</a>
+        </div>
       </div>
     </div>
 

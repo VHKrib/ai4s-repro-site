@@ -1150,6 +1150,30 @@
   };
 
   /* ------------------------------------------------------------- boot */
+
+  /* 公网版：读 GitHub Actions 最近一次真实运行的结果 */
+  async function loadGithubRun() {
+    var box = $("#run-live");
+    if (!box) return;
+    try {
+      var meta = await fetchJSON("data/latest/meta.json");
+      var redock = await fetchJSON("data/latest/redock_rmsd.json");
+      var vals = redock && redock.affinity_by_pose ? Object.values(redock.affinity_by_pose).map(Number) : [];
+      var best = vals.length ? Math.min.apply(null, vals) : null;
+      var rmsd = redock && redock.best_pose ? redock.best_pose.rmsd_A : null;
+      var when = meta && meta.finished ? new Date(meta.finished) : null;
+      setText($("#run-live-meta"), when ? ("完成于 " + fmtClock(when) + (meta.run_number ? " · 运行 #" + meta.run_number : "")) : "");
+      var parts = [];
+      if (best !== null) parts.push("最佳分 " + best.toFixed(3) + " kcal/mol");
+      if (rmsd !== null) parts.push("重对接偏差 " + rmsd.toFixed(3) + " Å（阈值 2.0）");
+      if (vals.length) parts.push(vals.length + " 个姿势");
+      setText($("#run-live-body"), parts.join(" · "));
+      box.hidden = false;
+    } catch (e) {
+      box.hidden = true;
+    }
+  }
+
   async function boot() {
     wireRouter();
     wireAsk();
@@ -1162,6 +1186,7 @@
     // 数据到位后，把当前视图的 3D 补挂上（直接深链到子页时也能出图）
     mountForView(state.view);
     startMonitor();
+    loadGithubRun();
   }
 
   if (document.readyState === "loading") {
