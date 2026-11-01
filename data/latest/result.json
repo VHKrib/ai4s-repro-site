@@ -1,0 +1,449 @@
+{
+  "schema_version": "a4s.repro_result.v1",
+  "mode": "case",
+  "case_id": "hiv1_1t3r_darunavir",
+  "pipeline_run_id": "latest",
+  "generated_at": "2026-11-01T15:42:16+00:00",
+  "host": {
+    "platform": "win32",
+    "python": "3.11.9",
+    "package_root": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\pkg"
+  },
+  "case_spec": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\pkg\\cases\\hiv1_1t3r_darunavir\\case.json",
+  "steps": [
+    {
+      "step": "01_prep_inputs",
+      "command": [
+        "C:\\hostedtoolcache\\windows\\Python\\3.11.9\\x64\\python.exe",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\pkg\\cases\\hiv1_1t3r_darunavir\\scripts\\prep_inputs.py",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\pkg\\cases\\hiv1_1t3r_darunavir\\inputs\\1T3R.pdb",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest"
+      ],
+      "cwd": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest",
+      "exit_code": 0,
+      "elapsed_s": 1.0,
+      "stdout_path": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\logs\\01_prep_inputs.stdout.log",
+      "stderr_path": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\logs\\01_prep_inputs.stderr.log"
+    },
+    {
+      "step": "02_prep_receptor",
+      "command": [
+        "C:\\hostedtoolcache\\windows\\Python\\3.11.9\\x64\\python.exe",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\pkg\\cases\\hiv1_1t3r_darunavir\\scripts\\prep_receptor.py",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\pkg\\cases\\hiv1_1t3r_darunavir\\inputs\\1T3R.pdb",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest"
+      ],
+      "cwd": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest",
+      "exit_code": 0,
+      "elapsed_s": 3.71,
+      "stdout_path": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\logs\\02_prep_receptor.stdout.log",
+      "stderr_path": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\logs\\02_prep_receptor.stderr.log"
+    },
+    {
+      "step": "03_prep_ligand",
+      "command": [
+        "C:\\hostedtoolcache\\windows\\Python\\3.11.9\\x64\\python.exe",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\pkg\\cases\\hiv1_1t3r_darunavir\\scripts\\prep_ligand.py",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\pkg\\cases\\hiv1_1t3r_darunavir\\inputs\\1T3R.pdb",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\pkg\\cases\\hiv1_1t3r_darunavir\\inputs\\pubchem_cid213039_3d.sdf",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest"
+      ],
+      "cwd": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest",
+      "exit_code": 0,
+      "elapsed_s": 0.66,
+      "stdout_path": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\logs\\03_prep_ligand.stdout.log",
+      "stderr_path": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\logs\\03_prep_ligand.stderr.log"
+    },
+    {
+      "step": "04_dock_vina",
+      "command": [
+        "C:\\hostedtoolcache\\windows\\Python\\3.11.9\\x64\\python.exe",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\pkg\\cases\\hiv1_1t3r_darunavir\\scripts\\dock_vina.py",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\receptor\\1T3R.pdbqt",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\ligand\\darunavir.pdbqt",
+        "19.459",
+        "29.766",
+        "14.159",
+        "20.361",
+        "20.806",
+        "18.122",
+        "8",
+        "9",
+        "42",
+        "4"
+      ],
+      "cwd": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest",
+      "exit_code": 0,
+      "elapsed_s": 48.91,
+      "stdout_path": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\logs\\04_dock_vina.stdout.log",
+      "stderr_path": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\logs\\04_dock_vina.stderr.log"
+    },
+    {
+      "step": "05_redock_rmsd",
+      "command": [
+        "C:\\hostedtoolcache\\windows\\Python\\3.11.9\\x64\\python.exe",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\pkg\\scripts\\a4s_redock.py",
+        "--poses",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\docking\\poses.pdbqt",
+        "--reference-sdf",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\ligand\\cocrystal_pose.sdf",
+        "--out",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\evidence\\redock_rmsd.json"
+      ],
+      "cwd": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest",
+      "exit_code": 0,
+      "elapsed_s": 5.02,
+      "stdout_path": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\logs\\05_redock_rmsd.stdout.log",
+      "stderr_path": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\logs\\05_redock_rmsd.stderr.log"
+    },
+    {
+      "step": "06_build_stage3_case",
+      "command": [
+        "C:\\hostedtoolcache\\windows\\Python\\3.11.9\\x64\\python.exe",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\pkg\\cases\\hiv1_1t3r_darunavir\\scripts\\build_stage3_case.py",
+        "--run",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest",
+        "--case",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\pkg\\cases\\hiv1_1t3r_darunavir\\case.json",
+        "--redock",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\evidence\\redock_rmsd.json"
+      ],
+      "cwd": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest",
+      "exit_code": 0,
+      "elapsed_s": 0.04,
+      "stdout_path": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\logs\\06_build_stage3_case.stdout.log",
+      "stderr_path": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\logs\\06_build_stage3_case.stderr.log"
+    },
+    {
+      "step": "07_stage3_run",
+      "command": [
+        "C:\\hostedtoolcache\\windows\\Python\\3.11.9\\x64\\python.exe",
+        "stage3.py",
+        "run",
+        "--config",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\stage3_case\\stage3_config_hiv1_1t3r_darunavir.json"
+      ],
+      "cwd": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\pkg\\src\\stage3-agent",
+      "exit_code": 0,
+      "elapsed_s": 52.37,
+      "stdout_path": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\logs\\07_stage3_run.stdout.log",
+      "stderr_path": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\logs\\07_stage3_run.stderr.log"
+    },
+    {
+      "step": "08_stage3_validate",
+      "command": [
+        "C:\\hostedtoolcache\\windows\\Python\\3.11.9\\x64\\python.exe",
+        "stage3.py",
+        "validate",
+        "--run-id",
+        "hiv1_1t3r_darunavir-20261101-154315",
+        "--config",
+        "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\stage3_case\\stage3_config_hiv1_1t3r_darunavir.json"
+      ],
+      "cwd": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\pkg\\src\\stage3-agent",
+      "exit_code": 0,
+      "elapsed_s": 0.12,
+      "stdout_path": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\logs\\08_stage3_validate.stdout.log",
+      "stderr_path": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\logs\\08_stage3_validate.stderr.log"
+    }
+  ],
+  "checks": [
+    {
+      "check": "input_sha256:pdb",
+      "expected": "a53e29c777486fc4d7b8c070d424ac35554ba1ca2ca04f81f64f8dcb4b3a1aad",
+      "actual": "a53e29c777486fc4d7b8c070d424ac35554ba1ca2ca04f81f64f8dcb4b3a1aad",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "check": "input_sha256:ligand_template_sdf",
+      "expected": "23409e8417228054c9e3811add480e2c96b4ff5d9af0b67adb2e7c3875f840d0",
+      "actual": "23409e8417228054c9e3811add480e2c96b4ff5d9af0b67adb2e7c3875f840d0",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "check": "vina_binary_sha256",
+      "expected": "b5a23b226ee5dc1b028df04082d13a7b0e5b9b12b988bbcf9498cb351e20b38f",
+      "actual": "b5a23b226ee5dc1b028df04082d13a7b0e5b9b12b988bbcf9498cb351e20b38f",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "check": "pose_count",
+      "expected": 9,
+      "actual": 9,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "check": "affinities_by_pose",
+      "expected": [
+        -9.958,
+        -9.148,
+        -8.877,
+        -8.782,
+        -8.366,
+        -8.233,
+        -7.946,
+        -7.88,
+        -7.81
+      ],
+      "actual": [
+        -9.958,
+        -9.148,
+        -8.877,
+        -8.782,
+        -8.366,
+        -8.233,
+        -7.946,
+        -7.88,
+        -7.81
+      ],
+      "pass": true,
+      "note": ""
+    },
+    {
+      "check": "best_affinity_kcal_mol",
+      "expected": -9.958,
+      "actual": -9.958,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "check": "redock_best_rmsd_A",
+      "expected": 0.211,
+      "actual": 0.211,
+      "pass": true,
+      "note": "threshold 2.0 A"
+    },
+    {
+      "check": "redock_pose_index",
+      "expected": 1,
+      "actual": 1,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "check": "box_center",
+      "expected": [
+        19.459,
+        29.766,
+        14.159
+      ],
+      "actual": [
+        19.459,
+        29.766,
+        14.159
+      ],
+      "pass": true,
+      "note": ""
+    },
+    {
+      "check": "box_size",
+      "expected": [
+        20.361,
+        20.806,
+        18.122
+      ],
+      "actual": [
+        20.361,
+        20.806,
+        18.122
+      ],
+      "pass": true,
+      "note": ""
+    },
+    {
+      "check": "protein_atoms",
+      "expected": 1496,
+      "actual": 1496,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "check": "receptor_pdbqt_atoms",
+      "expected": 1811,
+      "actual": 1811,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "check": "ligand_heavy_atoms",
+      "expected": 38,
+      "actual": 38,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "check": "ligand_formula",
+      "expected": "C27H37N3O7S",
+      "actual": "C27H37N3O7S",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "check": "stage3_validate_exit",
+      "expected": 0,
+      "actual": 0,
+      "pass": true,
+      "note": "OK  10 outputs validated: reference_check, pose_metrics, receptor_matrix, candidates_ranked, decisions, uncertainties, candidates_ranked_jsonl, decisions_jsonl, pose_metrics_jsonl, report"
+    },
+    {
+      "check": "stage3_pose_rows",
+      "expected": 9,
+      "actual": 9,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "check": "stage3_best_affinity",
+      "expected": -9.958,
+      "actual": -9.958,
+      "pass": true,
+      "note": ""
+    },
+    {
+      "check": "stage3_decision",
+      "expected": "advance",
+      "actual": "advance",
+      "pass": true,
+      "note": ""
+    },
+    {
+      "check": "stage3_outputs_validated",
+      "expected": 10,
+      "actual": "OK  10 outputs validated: reference_check, pose_metrics, receptor_matrix, candidates_ranked, decisions, uncertainties, candidates_ranked_jsonl, decisions_jsonl, pose_metrics_jsonl, report",
+      "pass": true,
+      "note": ""
+    }
+  ],
+  "limits": [
+    "对接分不是实测亲和力；本例是共晶配体自对接（redocking）的方法自检，不是新抑制剂发现",
+    "只做刚性受体 + 单一 vina 协议：无突变 panel、无 MD、无 AF3、无自由能计算"
+  ],
+  "verdict": "OK",
+  "artifacts": {
+    "stage3_run_dir": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\stage3_runs\\hiv1_1t3r_darunavir-20261101-154315",
+    "docking_result": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\docking\\docking_result.json",
+    "redock_rmsd": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\evidence\\redock_rmsd.json",
+    "stage3_config": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\stage3_case\\stage3_config_hiv1_1t3r_darunavir.json",
+    "vina_log": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\docking\\vina.log"
+  },
+  "docking": {
+    "engine": "AutoDock Vina v1.2.5",
+    "binary_sha256": "b5a23b226ee5dc1b028df04082d13a7b0e5b9b12b988bbcf9498cb351e20b38f",
+    "elapsed_s": 48.84,
+    "poses": 9,
+    "affinities_kcal_mol": [
+      -9.958,
+      -9.148,
+      -8.877,
+      -8.782,
+      -8.366,
+      -8.233,
+      -7.946,
+      -7.88,
+      -7.81
+    ],
+    "command": [
+      "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\pkg\\tools\\vina_1.2.5_win.exe",
+      "--receptor",
+      "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\receptor\\1T3R.pdbqt",
+      "--ligand",
+      "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\ligand\\darunavir.pdbqt",
+      "--scoring",
+      "vina",
+      "--center_x",
+      "19.4590",
+      "--center_y",
+      "29.7660",
+      "--center_z",
+      "14.1590",
+      "--size_x",
+      "20.3610",
+      "--size_y",
+      "20.8060",
+      "--size_z",
+      "18.1220",
+      "--exhaustiveness",
+      "8",
+      "--num_modes",
+      "9",
+      "--seed",
+      "42",
+      "--cpu",
+      "4",
+      "--out",
+      "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\vina_shim_eu8_jobq\\poses.pdbqt"
+    ]
+  },
+  "redock": {
+    "method": "meeko mk_export (pdbqt->sdf) + RDKit rdMolAlign.GetBestRMS (symmetry aware)",
+    "best_pose": {
+      "pose_index": 1,
+      "rmsd_A": 0.211
+    },
+    "per_pose": [
+      {
+        "pose_index": 1,
+        "rmsd_A": 0.211
+      },
+      {
+        "pose_index": 2,
+        "rmsd_A": 2.733
+      },
+      {
+        "pose_index": 3,
+        "rmsd_A": 2.707
+      },
+      {
+        "pose_index": 4,
+        "rmsd_A": 3.005
+      },
+      {
+        "pose_index": 5,
+        "rmsd_A": 3.028
+      },
+      {
+        "pose_index": 6,
+        "rmsd_A": 2.945
+      },
+      {
+        "pose_index": 7,
+        "rmsd_A": 2.924
+      },
+      {
+        "pose_index": 8,
+        "rmsd_A": 1.87
+      },
+      {
+        "pose_index": 9,
+        "rmsd_A": 1.923
+      }
+    ]
+  },
+  "stage3": {
+    "run_dir": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\runs\\latest\\stage3_runs\\hiv1_1t3r_darunavir-20261101-154315",
+    "validate": "OK  10 outputs validated: reference_check, pose_metrics, receptor_matrix, candidates_ranked, decisions, uncertainties, candidates_ranked_jsonl, decisions_jsonl, pose_metrics_jsonl, report",
+    "decisions": [
+      {
+        "candidate_id": "DRV",
+        "name": "Darunavir (1T3R co-crystal ligand 017, TMC114)",
+        "role": "candidate",
+        "tier": "B",
+        "composite_score": "0.588",
+        "decision": "advance",
+        "decision_codes": "",
+        "decision_reason": "达到预设计算筛选标准，优先进入实验验证",
+        "next_stage": "04",
+        "reviewer_required": "false",
+        "hard_failures": "",
+        "soft_flags": ""
+      }
+    ],
+    "poses": 9
+  },
+  "finished_at": "2026-11-01T15:44:08+00:00"
+}
