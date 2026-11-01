@@ -1,0 +1,23 @@
+{
+  "cmd": "initiate",
+  "http_status": 200,
+  "elapsed_s": 6.19,
+  "outcome": "http",
+  "request_id": null,
+  "sandbox_id": null,
+  "thread_id": "abb453a1-e8d9-46b4-a105-bc3afb8ee338",
+  "agent_run_id": "7853fae2-e60c-4507-be75-76afb0df049c",
+  "server_keys": [
+    "agent_run_id",
+    "sandbox_id",
+    "thread_id"
+  ],
+  "response": {
+    "sandbox_id": null,
+    "thread_id": "abb453a1-e8d9-46b4-a105-bc3afb8ee338",
+    "agent_run_id": "7853fae2-e60c-4507-be75-76afb0df049c"
+  },
+  "client_timeout_s": 600.0,
+  "retried": false,
+  "log_file": "D:\\a\\ai4s-repro-site\\ai4s-repro-site\\pkg\\logs\\sciencepal_bridge_initiate_20261101-155315.log"
+}
