@@ -51,8 +51,10 @@ jobs:
       - name: Run pipeline (real docking)
         shell: pwsh
         run: |
+          $py = (python -c "import sys; print(sys.executable)").Trim()
+          Write-Host "interpreter: $py"
           $out = "runs/latest"
-          python pkg/scripts/run_pipeline.py --mode case --case "pkg/cases/${{ github.event.inputs.case_id }}" --out $out --science-python python --stage3-python python
+          python pkg/scripts/run_pipeline.py --mode case --case "pkg/cases/${{ github.event.inputs.case_id }}" --out $out --science-python $py --stage3-python $py
           Get-ChildItem -Recurse $out | Select-Object FullName, Length
 
       - name: Collect results
