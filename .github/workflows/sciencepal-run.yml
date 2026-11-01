@@ -1,0 +1,107 @@
+name: Run SciencePal agent
+
+on:
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: "要交给 Biology Agent 的任务描述"
+        required: true
+        default: "确认收到 JAK2/6VGL/RXT 准备任务，用三行内说明你会如何准备；不要展开成长篇报告。"
+      agent_id:
+        description: "agent id"
+        required: true
+        default: "10000000-0000-0000-0000-000000000002"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sciencepal
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    env:
+      PYTHONUTF8: "1"
+      PYTHONIOENCODING: "utf-8"
+    steps:
+      - name: Disable CRLF conversion
+        shell: pwsh
+        run: git config --global core.autocrlf false
+
+      - name: Checkout site
+        uses: actions/checkout@v4
+
+      - name: Checkout package
+        uses: actions/checkout@v4
+        with:
+          repository: VHKrib/ai4s-repro-package
+          path: pkg
+          ref: main
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install bridge deps
+        run: python -m pip install --upgrade pip requests
+
+      - name: Stage API key (never printed)
+        shell: pwsh
+        env:
+          SP_KEY: ${{ secrets.SCIENCEPAL_API_KEY }}
+        run: |
+          if (-not $env:SP_KEY) { throw "SCIENCEPAL_API_KEY secret is not set" }
+          New-Item -ItemType Directory -Force -Path pkg/secrets | Out-Null
+          Set-Content -Path pkg/secrets/sciencepal_key.txt -Value $env:SP_KEY.Trim() -NoNewline -Encoding utf8
+          "key staged, length=$($env:SP_KEY.Trim().Length)"
+
+      - name: Initiate agent run
+        shell: pwsh
+        env:
+          PROMPT: ${{ github.event.inputs.prompt }}
+          AGENT_ID: ${{ github.event.inputs.agent_id }}
+        run: |
+          New-Item -ItemType Directory -Force -Path out | Out-Null
+          python pkg/scripts/sciencepal_bridge.py initiate --prompt $env:PROMPT --agent-id $env:AGENT_ID --i-accept-another-billing --timeout 600 > out/initiate.json
+          Get-Content out/initiate.json
+
+      - name: Poll to completion
+        shell: pwsh
+        run: |
+          $runId = (Get-Content out/initiate.json -Raw | ConvertFrom-Json).agent_run_id
+          if (-not $runId) { throw "no agent_run_id in initiate output" }
+          "run_id=$runId" | Tee-Object -FilePath out/run_id.txt
+          python pkg/scripts/sciencepal_bridge.py poll --run-id $runId --interval 10 --timeout 900 > out/poll.json
+          Get-Content out/poll.json | Select-Object -Last 5
+
+      - name: Fetch reply text
+        shell: pwsh
+        run: |
+          $runId = ((Get-Content out/run_id.txt) -replace '^run_id=', '').Trim()
+          python pkg/scripts/sciencepal_bridge.py text --run-id $runId --timeout 120 > out/reply.md
+          "reply bytes: " + (Get-Item out/reply.md).Length
+
+      - name: Publish
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path data/sciencepal/latest | Out-Null
+          Copy-Item out/initiate.json data/sciencepal/latest/initiate.json -Force
+          Copy-Item out/poll.json data/sciencepal/latest/poll.json -Force
+          Copy-Item out/reply.md data/sciencepal/latest/reply.md -Force
+          $meta = @{
+            finished   = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+            run_number = "${{ github.run_number }}"
+            agent_id   = "${{ github.event.inputs.agent_id }}"
+            prompt     = "${{ github.event.inputs.prompt }}"
+            runner     = "${{ runner.os }}"
+          } | ConvertTo-Json
+          $meta | Out-File -Encoding utf8 data/sciencepal/latest/meta.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/sciencepal
+          git commit -m "sciencepal run ${{ github.run_number }}"
+          git push
