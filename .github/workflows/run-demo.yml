@@ -1,0 +1,80 @@
+name: Run demo pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      case_id:
+        description: "case directory name"
+        required: true
+        default: "hiv1_1t3r_darunavir"
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: run-demo
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout site
+        uses: actions/checkout@v4
+
+      - name: Checkout package
+        uses: actions/checkout@v4
+        with:
+          repository: VHKrib/ai4s-repro-package
+          path: pkg
+          ref: main
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install science deps
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r pkg/requirements/science.txt
+
+      - name: Smoke test (no docking)
+        run: python pkg/tests/smoke_test.py
+
+      - name: Run pipeline (real docking)
+        shell: pwsh
+        run: |
+          $out = "runs/latest"
+          python pkg/scripts/run_pipeline.py --mode case --case "pkg/cases/${{ github.event.inputs.case_id }}" --out $out --science-python python --stage3-python python
+          Get-ChildItem -Recurse $out | Select-Object FullName, Length
+
+      - name: Collect results
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path data/latest | Out-Null
+          $root = "runs/latest"
+          Get-ChildItem -Recurse -Filter result.json $root | Select-Object -First 1 | Copy-Item -Destination data/latest/result.json -Force
+          Get-ChildItem -Recurse -Filter redock_rmsd.json $root | Select-Object -First 1 | Copy-Item -Destination data/latest/redock_rmsd.json -Force
+          $meta = @{
+            case_id    = "${{ github.event.inputs.case_id }}"
+            run_id     = "${{ github.run_id }}"
+            run_number = "${{ github.run_number }}"
+            commit     = "${{ github.sha }}"
+            finished   = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+            runner     = "${{ runner.os }}"
+          } | ConvertTo-Json
+          $meta | Out-File -Encoding utf8 data/latest/meta.json
+          if (Test-Path data/latest/result.json) { "result.json OK" } else { throw "result.json missing" }
+          if (Test-Path data/latest/redock_rmsd.json) { "redock_rmsd.json OK" } else { throw "redock_rmsd.json missing" }
+
+      - name: Commit results
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/latest
+          git commit -m "run ${{ github.run_number }}: ${{ github.event.inputs.case_id }} results"
+          git push
